@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="borderSpace">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="borderVO" type="egov.border.domain.BorderVO"/>
+<!-- 	
+	<resultMap id="pointVO" class="PointVO">
+		<result property="pointid" column="pointid"/>
+		<result property="userid" column="userid"/>
+		<result property="buypoint" column="buypoint"/>
+	</resultMap> -->
+	
+	<parameterMap id="proc_insert_param" class="borderVO">
+		<parameter property="borderid" javaType="java.lang.Integer" jdbcType="INT" mode="IN"/>
+		<parameter property="userid" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN"/>
+		<parameter property="editip" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN"/>
+		<parameter property="title" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN"/>
+		<parameter property="bordertext" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN"/>
+	</parameterMap>
+	
+	<parameterMap id="proc_select_param" class="borderVO">
+		<parameter property="currentPageNo" javaType="java.lang.Integer" jdbcType="INT" mode="IN"/>
+		<parameter property="recordCountPerPage" javaType="java.lang.Integer" jdbcType="INT" mode="IN"/>
+		<parameter property="list_count" javaType="java.lang.Integer" jdbcType="INT" mode="OUT"/>
+	</parameterMap>
+	
+	
+	<insert id="borderDAO.insertBorder">
+		insert into egov_bbs(borderid, bordertype, group_num, parentid, group_order, group_tab, userid, nickname, writerip, editid, editip, title, bordertext, seecount, filename, filetype, fileurl, replycount)
+		values(nextval(borderid_seq), '0', lastval(borderid_seq), 0, 0, 0, #userid#, #userid#, #writerip#, '', '', #title#, #bordertext#, 0, #filename#, #filetype#, #fileurl#, 0)
+	</insert>
+	
+	<procedure id="borderDAO.selectBorderList" parameterMap="proc_select_param" resultClass="egovMap">
+		call selectBorder(?,?,?)
+	</procedure>	
+	
+	<select id="borderDAO.selectBorderDetail" resultClass="borderVO">
+		select borderid, nickname, title, bordertext, group_tab, fileurl
+		from egov_bbs
+		where borderid = #borderid#
+	</select>
+
+	<procedure id="borderDAO.insertBorderReply" parameterMap="proc_insert_param">
+		call insertBorderReply(?,?,?,?,?)
+	</procedure>
+	
+	<update id="borderDAO.updateBorderModify">
+		update egov_bbs 
+		set title=#title#, bordertext=#bordertext#, editid=#editid#, editip=#editip#
+		where borderid = #borderid#
+	</update>
+	
+	<update id="borderDAO.updateBorderDelete">
+		update egov_bbs
+		set title=#title#, editid=#userid#, editip=#editip#, bordertext=''
+		where borderid = #borderid# and userid = #userid#
+	</update>
+	
+	<select id="borderDAO.selectBorderTotal" resultClass="java.lang.Integer">
+		select count(*) from egov_bbs
+	</select>
+	
+<!-- 	<insert id="borderDAO.proctest" parameterClass="PointVO">
+		insert into egov_point(pointid, userid, buypoint)
+		values(#pointid#, #userid#, #buypoint#)
+	</insert> -->
+</sqlMap>

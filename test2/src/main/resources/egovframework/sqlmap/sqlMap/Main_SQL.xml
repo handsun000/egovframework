@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="mainSpace">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="mainVO" type="egov.main.domain.MainVO"/>
+	
+	<select id="mainDAO.selectListMain" resultClass="egovMap">
+		SELECT user_id, user_pw
+		FROM egov_user
+	</select>
+	
+	<select id="mainDAO.selectLoginMain" resultClass="java.lang.Integer">
+		select count(*)
+		from egov_user
+		where user_id = '$user_id$' and user_pw='$user_pw$'
+	</select>
+	
+</sqlMap>

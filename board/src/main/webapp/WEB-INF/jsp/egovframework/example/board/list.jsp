@@ -15,6 +15,12 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script>
+$(document).ready(function() {
+	<c:if test="${!empty msg}">
+		alert("${msg}");
+	</c:if>
+});
+
 function add() {
 	location.href = "<c:url value='/mgmt.do'/>";
 }
@@ -26,11 +32,11 @@ function view() {
 
 function setPwd(userid) {
 	
-	if(userid=="admin"){
+	if(userid == "admin"){
 		$('#password').val('manager');
-	} else if(userid=="guest") {
+	} else if(userid == "guest") {
 		$('#password').val('guest');
-	} else if(userid=="guest2") {
+	} else if(userid == "guest2") {
 		$('#password').val('guest2');
 	}
 }
@@ -55,9 +61,10 @@ function check() {
 	<h1>메인화면</h1>
 	<div class="panel panel-default">
 		<div class="panel-heading">
-			<form class="form-inline" action="/login.do">
+		<c:if test="${sessionScope.userid == null || sessionScope.userid == '' }">
+			<form class="form-inline" method="POST" action="<c:url value='/login.do'/>">
 				<div class="form-group">
-					<label for="id">ID:</label>
+					<label for="userid">ID:</label>
 					<select class="form-control" id="userid" name="userid" onchange="setPwd(this.value);">
 						<option value="">선택하세요</option>
 						<option value="admin">관리자</option>
@@ -67,10 +74,15 @@ function check() {
 				</div>
 				<div class="form-group">
 					<label for="password">Password:</label>
-					<input type="password" class="form-control" id="password">
+					<input type="password" class="form-control" id="password" name="password">
 				</div>
 				<button type="submit" class="btn btn-default" onclick="return check()">로그인</button>
 			</form>
+			</c:if>
+			<c:if test="${sessionScope.userid != null || sessionScope.userid != '' }">
+				${sessionScope.username }님 환영합니다.
+				<button type="submit" class="btn btn-default" onclick="out();">로그아웃</button>
+			</c:if>
 		</div>
 		<div class="panel-body">
 			<form action="/search.do">
